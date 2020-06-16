@@ -10,7 +10,7 @@ import mes_classes.*;
 public class main {
 
 	public static void main(String[] args) {
-		System.out.println("coucou");
+		System.out.println("Lancement du Main");
 		/*
 		Date maintenant1 = new Date(System.currentTimeMillis()); 
 		Date maintenant2 = Calendar.getInstance().getTime();

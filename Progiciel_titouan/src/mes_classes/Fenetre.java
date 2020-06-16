@@ -1,6 +1,5 @@
 package mes_classes;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -10,25 +9,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
 
 public class Fenetre extends JFrame {
 	
 	  
-	  private JPanel container = new JPanel();
 	  private JComboBox combo = new JComboBox();
 	  private JLabel label = new JLabel("Liste des OPCO");
 	  
 	  //numero siret 
-	  private JTextField jtfSiret = new JTextField("Code de 15 chiffre"); 
+	  private JFormattedTextField jtfSiret = new JFormattedTextField(NumberFormat.getIntegerInstance()); 
 	  private JLabel labelSiret = new JLabel("Numero SIRET");
 	  
 	  
@@ -37,15 +43,17 @@ public class Fenetre extends JFrame {
 	  private JLabel labelNom = new JLabel("Nom de l'enreprise");
 	  
 	  //IDCC 
-	  private JTextField jtfIDCC = new JTextField(""); 
+	  //private JTextField jtfIDCC = new JTextField(""); // JTF classique sans probleme 
+	  private JFormattedTextField jtfIDCC = new JFormattedTextField(NumberFormat.getIntegerInstance());
 	  private JLabel labelIDCC = new JLabel("IDCC");
 	  
 	  //DateDeDebut
-	  private JTextField jtfDateDebut = new JTextField(""); 
+	  //private JTextField jtfDateDebut = new JTextField(""); // sans le format date sans probleme
+	  private JFormattedTextField jtfDateDebut = new JFormattedTextField(DateFormat.getDateInstance(DateFormat.SHORT));; 
 	  private JLabel labelDateDebut = new JLabel("Date de debut");
 	  
 	  //DateDeFin
-	  private JTextField jtfDateFin = new JTextField(""); 
+	  private JFormattedTextField jtfDateFin = new JFormattedTextField(DateFormat.getDateInstance(DateFormat.SHORT));; 
 	  private JLabel labelDateFin = new JLabel("Date de fin");
 
 	  
@@ -54,6 +62,11 @@ public class Fenetre extends JFrame {
 	  private JCheckBox check2 = new JCheckBox("Restauration");
 	  private JCheckBox check3 = new JCheckBox("Premier Equiepements");
 	  private JCheckBox check4 = new JCheckBox("Mobilités");
+	  
+	  //ajout du boutton valider 
+	  private JButton boutonValider = new JButton("Valider");
+
+	  
 
 	 
 	  
@@ -62,19 +75,27 @@ public class Fenetre extends JFrame {
 		  
 		  // caracteristiques primaires 
     this.setTitle("Creation d'une entreprise");	    		//Définit un titre pour notre fenêtre
-    this.setSize(500, 300);	    							//Définit sa taille : 400 pixels de large et 100 pixels de haut
+    this.setSize(600, 250);	    							//Définit sa taille : 400 pixels de large et 100 pixels de haut
     this.setLocationRelativeTo(null);	    				//Nous demandons maintenant à notre objet de se positionner au centre
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	    //Termine le processus lorsqu'on clique sur la croix rouge
-    setResizable(true);										//Empeche le redimensionnement 
+    setResizable(false);										//Empeche le redimensionnement 
     setAlwaysOnTop(false);										//garde touours la fenetre au premier plan 
     
     
 
-    	//conteneurs 
-    container.setBackground(Color.white);
-    //container.setLayout(new BorderLayout());
-    container.setLayout(new GridLayout(5,2,10,10)); //utiliser une grille pour agencer les composants 
-    //combo.setPreferredSize(new Dimension(200, 20));
+    JOptionPane jop1, jop2, jop3;
+    
+  //Boîte du message d'information
+    jop1 = new JOptionPane();
+    jop1.showMessageDialog(null, "Message informatif", "Information", JOptionPane.INFORMATION_MESSAGE);
+    		
+    //Boîte du message préventif
+    jop2 = new JOptionPane();
+    jop2.showMessageDialog(null, "Message préventif", "Attention", JOptionPane.WARNING_MESSAGE);
+    		
+    //Boîte du message d'erreur
+    jop3 = new JOptionPane();
+    jop3.showMessageDialog(null, "Message d'erreur", "Erreur", JOptionPane.ERROR_MESSAGE);
 
     
     
@@ -90,64 +111,82 @@ public class Fenetre extends JFrame {
     	//Ajout du listener
     combo.addItemListener(new ItemState());
     combo.addActionListener(new ItemAction());
-    combo.setPreferredSize(new Dimension(100, 20));
+    combo.setPreferredSize(new Dimension(300, 20));
     combo.setForeground(Color.blue);
 
     
 		//Numero siret et recherche de l'existance d'une entreprise 
     Box top = Box.createHorizontalBox();
-    //JPanel top = new JPanel();
-    //top.setLayout(new BoxLayout(top, BoxLayout.LINE_AXIS));
+    jtfSiret.setToolTipText("numero de 15 chiffre"); // lorsqu'on laisse la souris dessus : donne des indications 
 	top.add(labelSiret);
 	top.add(jtfSiret);
+	top.setMaximumSize(new Dimension(300, 20));
     
 	
 	//caracteristique d'une entreprise 
     Box l1 = Box.createHorizontalBox();
-    //JPanel l1 = new JPanel();
-    //l1.setLayout(new BoxLayout(l1, BoxLayout.LINE_AXIS));
-    //l1.setPreferredSize(new Dimension(6,4));
+    l1.add (Box.createRigidArea (new Dimension (42,0)));
     l1.add(labelNom);
     l1.add(jtfNom);
+    l1.add (Box.createRigidArea (new Dimension (50,0)));
 	l1.add(labelIDCC);
     l1.add(jtfIDCC);    
+    l1.add (Box.createRigidArea (new Dimension (42,0)));
+	l1.setMaximumSize(new Dimension(600, 20));
+
     
     Box l2 = Box.createHorizontalBox();
-    //JPanel l2 = new JPanel();
-    //l2.setLayout(new BoxLayout(l2, BoxLayout.LINE_AXIS));
     l2.add(labelDateDebut);
     l2.add(jtfDateDebut);
+    l2.add (Box.createRigidArea (new Dimension (50,0)));  
     l2.add(labelDateFin);
     l2.add(jtfDateFin);  
+	l2.setMaximumSize(new Dimension(500, 20));
+
     
     Box l3 = Box.createHorizontalBox();
-    //JPanel l3 = new JPanel();
-    //l3.setLayout(new BoxLayout(l3, BoxLayout.LINE_AXIS));  
     l3.add(label);
     l3.add(combo);
+	l3.setMaximumSize(new Dimension(600, 20));
+
 
 		//ajout des boutons au panel
-    JPanel bot = new JPanel();
+    Box bot = Box.createHorizontalBox();
 	bot.add(check1);
 	bot.add(check2);
 	bot.add(check3);
 	bot.add(check4); 
+	
+	
+	
+    Box valider = Box.createHorizontalBox();
+    valider.add(boutonValider);
+
+
 
     Font police = new Font("Arial", Font.BOLD, 14);
     jtfSiret.setFont(police);
-    //jtfSiret.setPreferredSize(new Dimension(150, 30));
     jtfSiret.setForeground(Color.BLUE);
     
 
-    //JPanel b4 = new JPanel();
     //On positionne maintenant ces trois lignes en colonne
-    //b4.setLayout(new BoxLayout(b4, BoxLayout.PAGE_AXIS));
     Box b4 = Box.createVerticalBox();
+    b4.add(Box.createVerticalStrut(10));
     b4.add(top);
+    b4.add(Box.createVerticalStrut(10));
     b4.add(l1);
+    b4.add(Box.createVerticalStrut(10));
     b4.add(l2);
-    b4.add(l3);   
+    b4.add(Box.createVerticalStrut(10));
+    b4.add(l3); 
+    b4.add(Box.createVerticalStrut(10));
     b4.add(bot);
+    b4.add(Box.createVerticalStrut(10));
+    b4.add(valider);
+
+    
+
+
 
 
     
@@ -157,22 +196,24 @@ public class Fenetre extends JFrame {
     
   
     
-    this.setContentPane(container);
+  
     
-    	//position des differents conteneurs 
-    container.add(top);
-    container.add(l1);
-    container.add(l2);
-    container.add(l3);
-    container.add(bot);
 
     	//listener sur les cases à cocher
     check1.addActionListener(new StateListener());
     check2.addActionListener(new StateListener());
     check3.addActionListener(new StateListener());
     check4.addActionListener(new StateListener());
+    
+    	//listener du bouton valider 
+    boutonValider.addActionListener(new BoutonListener());
+
+
 
     
+
+
+    this.setContentPane(b4);
     this.setVisible(true);  
 
 
@@ -194,7 +235,20 @@ public class Fenetre extends JFrame {
 		      System.out.println("source : " + ((JCheckBox)e.getSource()).getText() + " - état : " + ((JCheckBox)e.getSource()).isSelected());
 		    }
 		  }
-    
+	  class BoutonListener implements ActionListener{
+		    public void actionPerformed(ActionEvent e) {
+		    
+			  System.out.println("Siret : " + jtfSiret.getValue());  
+		      System.out.println("Nom : " + jtfNom.getText());
+		      System.out.println("IDCC : " + jtfIDCC.getText());
+		      System.out.println("DateDebut : " + jtfDateDebut.getText());		//a voir selon le format auquelle la rentrer 
+		      System.out.println("DateFin : " + jtfDateFin.getText());		//a voir selon le format auquelle la rentrer 
+		      
+
+		     
+		      
+		    }
+		  }
 
 	  
 }
